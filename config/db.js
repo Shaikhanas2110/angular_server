@@ -1,16 +1,24 @@
-// server/config/db.js
-const mongoose = require('mongoose');
+const mongoose = require("mongoose");
+
+let isConnected = false; // Tracks connection status
 
 const connectDB = async () => {
+  if (isConnected) {
+    console.log("=> Using existing database connection");
+    return;
+  }
+
+  console.log("=> Creating new database connection");
   try {
-    const conn = await mongoose.connect(process.env.MONGO_URI, {
-      autoIndex: true, // Builds indexes on startup
-      serverSelectionTimeoutMS: 5000, // Timeout after 5s if Atlas is unreachable
+    const db = await mongoose.connect(process.env.MONGO_URI, {
+      // Your custom options here (if any)
     });
-    console.log(` MongoDB Atlas Connected: ${conn.connection.host}`);
+
+    isConnected = db.connections[0].readyState;
+    console.log("MongoDB Atlas Connected Successfully");
   } catch (error) {
-    console.error(` MongoDB Atlas Connection Error: ${error.message}`);
-    process.exit(1);
+    console.error("Database connection error:", error);
+    // Do not use process.exit(1) in serverless environments as it crashes the container instance
   }
 };
 
