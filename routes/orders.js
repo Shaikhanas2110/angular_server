@@ -80,7 +80,7 @@ router.get("/my-orders", auth, async (req, res) => {
   }
 });
 
-router.get("/hello", auth, async (req, res) => {
+router.get("/hello", async (req, res) => {
   res.json("Hellow")
 });
 
